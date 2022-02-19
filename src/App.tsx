@@ -7,37 +7,49 @@ import PrivateRoute from "./routes/PrivateRoute";
 function App() {
   return (
     <BrowserRouter>
-      <Nav />
       <Routes>
-        {publicRoutes.map((route, key) => {
-          if (!route.nestedRoutes) {
+        <Route element={<Nav />}>
+          {publicRoutes.map((route, key) => {
+            if (!route.nestedRoutes) {
+              return (
+                <Route
+                  path={route.path}
+                  element={<route.component />}
+                  key={key}
+                />
+              );
+            }
             return (
               <Route
                 path={route.path}
                 element={<route.component />}
                 key={key}
+                children={route.nestedRoutes.map((nested, idx) => {
+                  return (
+                    <Route
+                      path={nested.path}
+                      element={<nested.component />}
+                      key={idx}
+                    />
+                  );
+                })}
               />
             );
-          }
-          return (
-            <Route
-              path={route.path}
-              element={<route.component />}
-              key={key}
-              children={route.nestedRoutes.map((nested, idx) => {
-                return (
-                  <Route
-                    path={nested.path}
-                    element={<nested.component />}
-                    key={idx}
-                  />
-                );
-              })}
-            />
-          );
-        })}
-        {protectedRoutes.map((route, key) => {
-          if (!route.nestedRoutes) {
+          })}
+          {protectedRoutes.map((route, key) => {
+            if (!route.nestedRoutes) {
+              return (
+                <Route
+                  path={route.path}
+                  element={
+                    <PrivateRoute>
+                      <route.component />
+                    </PrivateRoute>
+                  }
+                  key={key}
+                />
+              );
+            }
             return (
               <Route
                 path={route.path}
@@ -47,30 +59,19 @@ function App() {
                   </PrivateRoute>
                 }
                 key={key}
+                children={route.nestedRoutes.map((nested, idx) => {
+                  return (
+                    <Route
+                      path={nested.path}
+                      element={<nested.component />}
+                      key={idx}
+                    />
+                  );
+                })}
               />
             );
-          }
-          return (
-            <Route
-              path={route.path}
-              element={
-                <PrivateRoute>
-                  <route.component />
-                </PrivateRoute>
-              }
-              key={key}
-              children={route.nestedRoutes.map((nested, idx) => {
-                return (
-                  <Route
-                    path={nested.path}
-                    element={<nested.component />}
-                    key={idx}
-                  />
-                );
-              })}
-            />
-          );
-        })}
+          })}
+        </Route>
       </Routes>
     </BrowserRouter>
   );
