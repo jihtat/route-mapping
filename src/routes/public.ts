@@ -1,7 +1,9 @@
 import { About } from "../pages/About";
 import { Home } from "../pages/Home";
 
-export const publicRoutes = [
+import { routeType } from "../types/route";
+
+export const publicRoutes: routeType = [
   {
     path: "/",
     component: Home,
